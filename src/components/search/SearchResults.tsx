@@ -1,5 +1,5 @@
+import type { LexiconEntry } from "@/types/LexiconEntry";
 import { Search, ArrowRight, AlertCircle } from "lucide-react";
-import type { LexiconEntry } from "@/data/lexicon";
 import type { RefObject } from "react";
 
 interface SearchResultsProps {

@@ -8,6 +8,7 @@ import { SearchFooter } from "./search/SearchFooter";
 import { debounce } from "@/utils/debounce";
 import { supabase } from "@/lib/supabase";
 import type { LexiconEntry } from "@/types/LexiconEntry";
+import { SearchWordDetailDialog } from "./search/SearchWordDetailDialog";
 
 interface SearchPanelProps {
   initialQuery?: string;
@@ -20,9 +21,16 @@ export function SearchPanel({ initialQuery = "" }: SearchPanelProps) {
   const [responseTime, setResponseTime] = useState<number | null>(null);
   const [results, setResults] = useState<LexiconEntry[]>([]);
   const [isDebouncing, setIsDebouncing] = useState(false);
+  const [selectedWord, setSelectedWord] = useState<LexiconEntry | null>(null);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
+
+  const handleWordClick = (entry: LexiconEntry) => {
+    setQuery(entry.word);
+    setIsOpen(false);
+    setSelectedWord(entry);
+  };
 
   const performSearch = useCallback(async (searchQuery: string) => {
     if (!searchQuery.trim()) return;
@@ -142,6 +150,7 @@ export function SearchPanel({ initialQuery = "" }: SearchPanelProps) {
                 onClick={(entry) => {
                   setQuery(entry.word);
                   setIsOpen(false);
+                  handleWordClick(entry);
                 }}
                 listRef={listRef}
                 query={query}
@@ -153,6 +162,12 @@ export function SearchPanel({ initialQuery = "" }: SearchPanelProps) {
           )}
         </AnimatePresence>
       </div>
+
+      <SearchWordDetailDialog
+        entry={selectedWord}
+        isOpen={!!selectedWord}
+        onClose={() => setSelectedWord(null)}
+      />
     </div>
   );
 }
