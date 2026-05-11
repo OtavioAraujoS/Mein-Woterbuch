@@ -1,126 +1,62 @@
-/* eslint-disable react-hooks/set-state-in-effect */
-import { useEffect, useRef, useState, useCallback, useMemo } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { SearchHeader } from "./search/SearchHeader";
 import { SearchInput } from "./search/SearchInput";
 import { SearchResults } from "./search/SearchResults";
 import { SearchFooter } from "./search/SearchFooter";
-import { debounce } from "@/utils/debounce";
-import { supabase } from "@/lib/supabase";
-import type { LexiconEntry } from "@/types/LexiconEntry";
 import { SearchWordDetailDialog } from "./search/SearchWordDetailDialog";
+import { useLexiconSearch } from "@/hooks/useLexiconSearch";
 
 interface SearchPanelProps {
   initialQuery?: string;
 }
 
 export function SearchPanel({ initialQuery = "" }: SearchPanelProps) {
-  const [query, setQuery] = useState(initialQuery);
-  const [activeIdx, setActiveIdx] = useState(0);
-  const [, setIsOpen] = useState(false);
-  const [responseTime, setResponseTime] = useState<number | null>(null);
-  const [results, setResults] = useState<LexiconEntry[]>([]);
-  const [isDebouncing, setIsDebouncing] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [selectedWord, setSelectedWord] = useState<LexiconEntry | null>(null);
+  const {
+    query,
+    setQuery,
+    results,
+    activeIdx,
+    setActiveIdx,
+    isLoading,
+    isDebouncing,
+    responseTime,
+    selectedWord,
+    setSelectedWord,
+    clearSearch,
+    handleWordClick,
+  } = useLexiconSearch({ initialQuery });
 
+  const [, setIsOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
 
-  const handleWordClick = (entry: LexiconEntry) => {
-    setQuery(entry.word);
-    setIsOpen(false);
-    setSelectedWord(entry);
-  };
-
-  const performSearch = useCallback(async (searchQuery: string) => {
-    if (!searchQuery.trim()) return;
-
-    setIsLoading(true);
-    const start = performance.now();
-
-    const { data, error } = await supabase
-      .from("words")
-      .select("*")
-      .ilike("word", `%${searchQuery}%`)
-      .limit(10);
-
-    const elapsed = Math.round(performance.now() - start);
-
-    if (!error && data) {
-      setResults(data as LexiconEntry[]);
-    }
-
-    setResponseTime(elapsed);
-    setIsDebouncing(false);
-    setIsLoading(false);
-  }, []);
-
-  const executeSearch = useMemo(
-    () => debounce(performSearch, 500),
-    [performSearch],
-  );
-
-  useEffect(() => {
-    if (initialQuery) {
-      performSearch(initialQuery);
-    }
-  }, [initialQuery, performSearch]);
-
-  useEffect(() => {
-    if (!query.trim()) {
-      executeSearch.cancel();
-      setResults([]);
-      setResponseTime(null);
-      setIsDebouncing(false);
-      return;
-    }
-
-    setIsDebouncing(true);
-    executeSearch(query);
-
-    return () => {
-      executeSearch.cancel();
-    };
-  }, [query, executeSearch]);
-
-  useEffect(() => {
-    setActiveIdx(0);
-  }, [results]);
-
-  const clearSearch = useCallback(() => {
-    setQuery("");
-    setIsOpen(false);
-    setActiveIdx(0);
-    setResponseTime(null);
-    inputRef.current?.focus();
-  }, []);
-
   const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Escape") {
-        clearSearch();
-        return;
-      }
+    (e: React.KeyboardEvent) => {
+      if (!query.trim() || results.length === 0) return;
+
       if (e.key === "ArrowDown") {
         e.preventDefault();
-        setIsOpen(true);
-        setActiveIdx((i) => Math.min(i + 1, results.length - 1));
+        setActiveIdx((prev) => (prev + 1) % results.length);
       } else if (e.key === "ArrowUp") {
         e.preventDefault();
-        setActiveIdx((i) => Math.max(i - 1, 0));
-      } else if (e.key === "Enter" && results[activeIdx]) {
-        setQuery(results[activeIdx].word);
+        setActiveIdx((prev) => (prev - 1 + results.length) % results.length);
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        const entry = results[activeIdx];
+        if (entry) {
+          handleWordClick(entry);
+        }
+      } else if (e.key === "Escape") {
         setIsOpen(false);
+        inputRef.current?.blur();
       }
     },
-    [results, activeIdx, clearSearch],
+    [query, results, activeIdx, setActiveIdx, handleWordClick],
   );
 
   useEffect(() => {
-    const list = listRef.current;
-    if (!list) return;
-    const active = list.children[activeIdx] as HTMLElement | undefined;
+    const active = listRef.current?.children[activeIdx] as HTMLElement;
     active?.scrollIntoView({ block: "nearest" });
   }, [activeIdx]);
 

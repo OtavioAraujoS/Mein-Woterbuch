@@ -44,7 +44,6 @@ export default function Library() {
       console.error("Erro ao deletar:", error.message);
     }
   };
-
   return (
     <main className="flex-1 min-h-screen p-8 lg:p-16 w-full text-zinc-100 font-sans">
       <AnimatePresence mode="wait">
