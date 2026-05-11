@@ -1,7 +1,8 @@
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Loader2, PlusCircle } from "lucide-react";
+import { Loader2, PlusCircle, Save } from "lucide-react";
 
 const wordSchema = z.object({
   word: z.string().min(1, "A palavra é obrigatória").max(50),
@@ -14,9 +15,14 @@ export type WordFormData = z.infer<typeof wordSchema>;
 interface LibraryFormProps {
   onSubmit: (data: WordFormData) => Promise<void>;
   isSubmitting?: boolean;
+  initialData?: WordFormData;
 }
 
-export function LibraryForm({ onSubmit, isSubmitting }: LibraryFormProps) {
+export function LibraryForm({
+  onSubmit,
+  isSubmitting,
+  initialData,
+}: LibraryFormProps) {
   const {
     register,
     handleSubmit,
@@ -24,16 +30,22 @@ export function LibraryForm({ onSubmit, isSubmitting }: LibraryFormProps) {
     formState: { errors, isSubmitting: isFormSubmitting },
   } = useForm<WordFormData>({
     resolver: zodResolver(wordSchema),
-    defaultValues: {
+    defaultValues: initialData || {
       word: "",
       definition: "",
       example: "",
     },
   });
 
+  useEffect(() => {
+    if (initialData) {
+      reset(initialData);
+    }
+  }, [initialData, reset]);
+
   const handleFormSubmit = async (data: WordFormData) => {
     await onSubmit(data);
-    reset();
+    if (!initialData) reset();
   };
 
   return (
@@ -105,8 +117,17 @@ export function LibraryForm({ onSubmit, isSubmitting }: LibraryFormProps) {
           <Loader2 className="w-5 h-5 animate-spin" />
         ) : (
           <>
-            <PlusCircle size={20} />
-            Salvar na Biblioteca
+            {initialData ? (
+              <>
+                <Save size={20} />
+                Salvar Alterações
+              </>
+            ) : (
+              <>
+                <PlusCircle size={20} />
+                Salvar na Biblioteca
+              </>
+            )}
           </>
         )}
       </button>

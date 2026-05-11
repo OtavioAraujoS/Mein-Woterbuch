@@ -23,7 +23,7 @@ export function LibraryHeader({
   };
   return (
     <div className="flex flex-col gap-6">
-      <header className="flex justify-between items-center">
+      <header className="flex flex-wrap justify-between items-center gap-4 lg:gap-0">
         <div className="space-y-2">
           <h2 className="text-4xl font-bold tracking-tight text-white">
             Biblioteca de palavras

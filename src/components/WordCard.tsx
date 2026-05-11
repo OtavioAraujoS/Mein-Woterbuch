@@ -5,10 +5,10 @@ import { motion } from "motion/react";
 interface WordCardProps {
   entry: WordEntry;
   onRemove: (id: string) => void;
-  key?: string;
+  onEdit: (entry: WordEntry) => void;
 }
 
-export default function WordCard({ entry, onRemove }: WordCardProps) {
+export default function WordCard({ entry, onRemove, onEdit }: WordCardProps) {
   return (
     <motion.div
       layout
@@ -18,7 +18,10 @@ export default function WordCard({ entry, onRemove }: WordCardProps) {
       className="relative group bg-[#0A0A0A] border border-white/5 rounded-sm p-5 hover:border-cyan-500/30 transition-colors"
     >
       <div className="flex justify-between items-start mb-3">
-        <h3 className="text-lg font-bold text-white tracking-tight leading-tight pr-8">
+        <h3
+          onClick={() => onEdit(entry)}
+          className="text-lg font-bold text-white tracking-tight leading-tight pr-8 cursor-pointer hover:text-cyan-400 transition-colors"
+        >
           {entry.word}
         </h3>
         <button
