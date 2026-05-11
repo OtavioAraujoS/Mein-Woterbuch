@@ -1,19 +1,31 @@
 import { useState, useEffect, useMemo } from "react";
-import { Search } from "lucide-react";
+import { Search, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import type { WordEntry } from "@/types/WordEntry";
 import WordCard from "@/components/WordCard";
+import { supabase } from "@/lib/supabase";
 
 export default function Library() {
-  const [savedWords, setSavedWords] = useState<WordEntry[]>(() => {
-    const local = localStorage.getItem("midnight_slate_words");
-    return local ? JSON.parse(local) : [];
-  });
+  const [savedWords, setSavedWords] = useState<WordEntry[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    localStorage.setItem("midnight_slate_words", JSON.stringify(savedWords));
-  }, [savedWords]);
+    async function fetchWords() {
+      setIsLoading(true);
+      const { data, error } = await supabase
+        .from("words")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (!error && data) {
+        setSavedWords(data);
+      }
+      setIsLoading(false);
+    }
+
+    fetchWords();
+  }, []);
 
   const filteredSavedWords = useMemo(() => {
     return savedWords.filter((w) =>
@@ -21,8 +33,14 @@ export default function Library() {
     );
   }, [savedWords, searchQuery]);
 
-  const removeWord = (id: string) => {
-    setSavedWords((prev) => prev.filter((w) => w.id !== id));
+  const removeWord = async (id: string) => {
+    const { error } = await supabase.from("words").delete().eq("id", id);
+
+    if (!error) {
+      setSavedWords((prev) => prev.filter((w) => w.id !== id));
+    } else {
+      console.error("Erro ao deletar:", error.message);
+    }
   };
 
   return (
@@ -41,7 +59,11 @@ export default function Library() {
             </h2>
             <div className="flex items-center gap-2 text-sm text-cyan-400/80">
               <div className="w-2 h-2 rounded-full bg-cyan-400 glow-cyan animate-pulse" />
-              <span>{savedWords.length} palavras sincronizadas</span>
+              <span>
+                {isLoading
+                  ? "Sincronizando..."
+                  : `${savedWords.length} palavras sincronizadas`}
+              </span>
             </div>
           </header>
 
@@ -58,19 +80,28 @@ export default function Library() {
             />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <AnimatePresence>
-              {filteredSavedWords.map((word) => (
-                <WordCard key={word.id} entry={word} onRemove={removeWord} />
-              ))}
-            </AnimatePresence>
-          </div>
+          {isLoading ? (
+            <div className="flex flex-col items-center justify-center py-20 gap-4">
+              <Loader2 className="w-8 h-8 animate-spin text-cyan-400" />
+              <p className="text-zinc-500">Conectando ao banco de dados...</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <AnimatePresence>
+                {filteredSavedWords.map((word) => (
+                  <WordCard key={word.id} entry={word} onRemove={removeWord} />
+                ))}
+              </AnimatePresence>
+            </div>
+          )}
 
-          {filteredSavedWords.length === 0 && (
+          {!isLoading && filteredSavedWords.length === 0 && (
             <div className="py-20 text-center space-y-4">
               <Search className="w-12 h-12 text-zinc-800 mx-auto" />
               <p className="text-zinc-500 italic">
-                Nenhuma palavra encontrada para "{searchQuery}"
+                {searchQuery
+                  ? `Nenhuma palavra encontrada para "${searchQuery}"`
+                  : "Sua biblioteca está vazia."}
               </p>
             </div>
           )}

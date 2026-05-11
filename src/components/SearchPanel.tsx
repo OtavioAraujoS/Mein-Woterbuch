@@ -1,12 +1,13 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { searchLexicon, type LexiconEntry } from "@/data/lexicon";
 import { SearchHeader } from "./search/SearchHeader";
 import { SearchInput } from "./search/SearchInput";
 import { SearchResults } from "./search/SearchResults";
 import { SearchFooter } from "./search/SearchFooter";
 import { debounce } from "@/utils/debounce";
+import { supabase } from "@/lib/supabase";
+import type { LexiconEntry } from "@/types/LexiconEntry";
 
 interface SearchPanelProps {
   initialQuery?: string;
@@ -23,12 +24,23 @@ export function SearchPanel({ initialQuery = "" }: SearchPanelProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
 
-  const performSearch = useCallback((searchQuery: string) => {
+  const performSearch = useCallback(async (searchQuery: string) => {
+    if (!searchQuery.trim()) return;
+
     const start = performance.now();
-    const found = searchLexicon(searchQuery);
+
+    const { data, error } = await supabase
+      .from("words")
+      .select("*")
+      .ilike("word", `%${searchQuery}%`)
+      .limit(10);
+
     const elapsed = Math.round(performance.now() - start);
 
-    setResults(found);
+    if (!error && data) {
+      setResults(data as LexiconEntry[]);
+    }
+
     setResponseTime(elapsed);
     setIsDebouncing(false);
   }, []);
@@ -37,6 +49,12 @@ export function SearchPanel({ initialQuery = "" }: SearchPanelProps) {
     () => debounce(performSearch, 300),
     [performSearch],
   );
+
+  useEffect(() => {
+    if (initialQuery) {
+      performSearch(initialQuery);
+    }
+  }, [initialQuery, performSearch]);
 
   useEffect(() => {
     if (!query.trim()) {
