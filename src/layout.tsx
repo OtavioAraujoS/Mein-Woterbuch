@@ -9,8 +9,8 @@ export default function Layout() {
 
       <Sidebar />
 
-      <main className="flex-1 md:ml-[240px] relative z-10 flex flex-col items-center justify-center min-h-screen overflow-y-auto pb-20 md:pb-0">
-        <div className="w-full max-w-[600px] px-6 flex flex-col">
+      <main className="flex-1 md:ml-[240px] relative z-10 flex flex-col min-h-screen overflow-y-auto pb-20 md:pb-0">
+        <div className="w-full flex flex-col flex-1">
           <Outlet />
         </div>
       </main>

@@ -5,8 +5,8 @@ import {
 } from "react-router-dom";
 import Layout from "./layout";
 import { SearchPage } from "./pages/search/page";
-import { Library } from "./pages/library/page";
 import "./index.css";
+import Library from "./pages/library/page";
 
 const router = createBrowserRouter([
   {

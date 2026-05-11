@@ -8,19 +8,11 @@ import { SearchResults } from "./search/SearchResults";
 import { SearchFooter } from "./search/SearchFooter";
 import { debounce } from "@/utils/debounce";
 
-type Language = "Inglês" | "Alemão";
-
-const LANG_MAP: Record<Language, "en" | "de"> = {
-  Inglês: "en",
-  Alemão: "de",
-};
-
 interface SearchPanelProps {
-  language: Language;
   initialQuery?: string;
 }
 
-export function SearchPanel({ language, initialQuery = "" }: SearchPanelProps) {
+export function SearchPanel({ initialQuery = "" }: SearchPanelProps) {
   const [query, setQuery] = useState(initialQuery);
   const [activeIdx, setActiveIdx] = useState(0);
   const [, setIsOpen] = useState(false);
@@ -59,12 +51,12 @@ export function SearchPanel({ language, initialQuery = "" }: SearchPanelProps) {
     }
 
     setIsDebouncing(true);
-    executeSearch(query, LANG_MAP[language]);
+    executeSearch(query, "de");
 
     return () => {
       executeSearch.cancel();
     };
-  }, [query, language, executeSearch]);
+  }, [query, executeSearch]);
 
   useEffect(() => {
     setActiveIdx(0);
