@@ -1,12 +1,49 @@
 @import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Roboto+Mono:wght@400;500;600&display=swap");
 
 @tailwind base;
+
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   body {
-    @apply bg-background-absolute text-text-primary font-sans;
+    @apply font-sans bg-background-absolute text-text-primary;
+  }
+
+  :root {
+    --background: #000000;
+    --foreground: #ffffff;
+    --card: #1b3a4b;
+    --card-foreground: #ffffff;
+    --popover: #1b3a4b;
+    --popover-foreground: #ffffff;
+    --primary: #006466;
+    --primary-foreground: #ffffff;
+    --secondary: #4d194d;
+    --secondary-foreground: #ffffff;
+    --muted: #1b3a4b;
+    --muted-foreground: #8a9ba8;
+    --accent: #006466;
+    --accent-foreground: #ffffff;
+    --destructive: #7f1d1d;
+    --destructive-foreground: #ffffff;
+    --border: rgba(255, 255, 255, 0.1);
+    --input: rgba(255, 255, 255, 0.1);
+    --ring: #006466;
+    --chart-1: #006466;
+    --chart-2: #4d194d;
+    --chart-3: #1b3a4b;
+    --chart-4: #8a9ba8;
+    --chart-5: #ffffff;
+    --radius: 0.625rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    @apply font-sans;
   }
 }
 

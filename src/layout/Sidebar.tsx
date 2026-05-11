@@ -1,7 +1,8 @@
 import { BookOpen, Search } from "lucide-react";
 import { useState } from "react";
-import { NavItem } from "./NavItem";
-import { MobileNavItem } from "./MobileNavItem";
+import { NavItem } from "@/layout/NavItem";
+import { MobileNavItem } from "@/layout/MobileNavItem";
+
 
 type NavItemType = "pesquisar" | "biblioteca";
 

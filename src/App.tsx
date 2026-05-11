@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Search, History, Sparkles } from "lucide-react";
 import { motion } from "motion/react";
 import "./index.css";
-import { DiscoveryCard } from "./components/DiscoveryCard";
-import { Sidebar } from "./layout/Sidebar";
+import { Sidebar } from "@/layout/Sidebar";
+import { DiscoveryCard } from "@/components/DiscoveryCard";
 
 type Language = "Inglês" | "Alemão";
 
