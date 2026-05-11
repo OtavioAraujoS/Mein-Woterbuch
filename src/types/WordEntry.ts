@@ -3,6 +3,7 @@ export interface WordEntry {
   word: string;
   definition: string;
   pronunciation?: string;
+  example?: string;
   addedAt: number;
 }
 

@@ -32,11 +32,10 @@ export default function WordCard({ entry, onRemove }: WordCardProps) {
       <p className="text-zinc-500 text-base leading-relaxed italic w-full">
         {entry.definition}
       </p>
-
-      <div className="mt-4 pt-4 border-t border-white/5 flex justify-between items-center opacity-0 group-hover:opacity-100 transition-opacity">
-        <span className="text-[10px] text-zinc-600 font-mono">
-          {new Date(entry.addedAt).toLocaleDateString()}
-        </span>
+      <div className="pl-4 border-l-2 border-cyan-400/30 mt-4">
+        <p className="text-zinc-500 italic text-lg">
+          Exemplo: "{entry.example}"
+        </p>
       </div>
     </motion.div>
   );
