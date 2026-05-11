@@ -4,9 +4,11 @@ import {
   Navigate,
 } from "react-router-dom";
 import Layout from "./layout";
+
 import { SearchPage } from "./pages/search/page";
 import "./index.css";
 import Library from "./pages/library/page";
+import { Toaster } from "./components/ui/sonner";
 
 const router = createBrowserRouter([
   {
@@ -30,5 +32,10 @@ const router = createBrowserRouter([
 ]);
 
 export default function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <>
+      <Toaster position="bottom-right" theme="dark" richColors />
+      <RouterProvider router={router} />
+    </>
+  );
 }

@@ -1,31 +1,33 @@
-import { useState, useEffect, useMemo } from "react";
+/* eslint-disable react-hooks/set-state-in-effect */
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { Search, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import type { WordEntry } from "@/types/WordEntry";
 import WordCard from "@/components/WordCard";
 import { supabase } from "@/lib/supabase";
+import { LibraryHeader } from "@/components/library/LibraryHeader";
 
 export default function Library() {
   const [savedWords, setSavedWords] = useState<WordEntry[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    async function fetchWords() {
-      setIsLoading(true);
-      const { data, error } = await supabase
-        .from("words")
-        .select("*")
-        .order("created_at", { ascending: false });
+  const fetchSavedWords = useCallback(async () => {
+    setIsLoading(true);
+    const { data, error } = await supabase
+      .from("words")
+      .select("*")
+      .order("created_at", { ascending: false });
 
-      if (!error && data) {
-        setSavedWords(data);
-      }
-      setIsLoading(false);
+    if (!error && data) {
+      setSavedWords(data);
     }
-
-    fetchWords();
+    setIsLoading(false);
   }, []);
+
+  useEffect(() => {
+    fetchSavedWords();
+  }, [fetchSavedWords]);
 
   const filteredSavedWords = useMemo(() => {
     return savedWords.filter((w) =>
@@ -53,32 +55,13 @@ export default function Library() {
           exit={{ opacity: 0, y: -20 }}
           className="space-y-10"
         >
-          <header className="space-y-2">
-            <h2 className="text-4xl font-bold tracking-tight text-white">
-              Biblioteca de palavras
-            </h2>
-            <div className="flex items-center gap-2 text-sm text-cyan-400/80">
-              <div className="w-2 h-2 rounded-full bg-cyan-400 glow-cyan animate-pulse" />
-              <span>
-                {isLoading
-                  ? "Sincronizando..."
-                  : `${savedWords.length} palavras sincronizadas`}
-              </span>
-            </div>
-          </header>
-
-          <div className="relative group">
-            <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-zinc-500 group-focus-within:text-cyan-400 transition-colors">
-              <Search className="w-5 h-5" />
-            </div>
-            <input
-              type="text"
-              placeholder="Procure por uma palavra..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-[#050505] border border-white/10 rounded-sm py-4 pl-12 pr-4 outline-none focus:border-cyan-500/50 glow-cyan focus:ring-0 transition-all text-lg"
-            />
-          </div>
+          <LibraryHeader
+            savedWords={savedWords}
+            isLoading={isLoading}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            onSuccess={fetchSavedWords}
+          />
 
           {isLoading ? (
             <div className="flex flex-col items-center justify-center py-20 gap-4">

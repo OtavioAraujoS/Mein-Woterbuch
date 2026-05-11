@@ -4,7 +4,7 @@ export interface WordEntry {
   definition: string;
   pronunciation?: string;
   example?: string;
-  addedAt: number;
+  addedAt?: number;
 }
 
 export type View = "home" | "saved";
