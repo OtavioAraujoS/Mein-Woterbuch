@@ -1,13 +1,15 @@
 import { BookOpen, Search } from "lucide-react";
-import { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { NavItem } from "@/layout/NavItem";
 import { MobileNavItem } from "@/layout/MobileNavItem";
 
-
-type NavItemType = "pesquisar" | "biblioteca";
-
 export function Sidebar() {
-  const [activeTab, setActiveTab] = useState<NavItemType>("pesquisar");
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const activeTab =
+    location.pathname === "/library" ? "biblioteca" : "pesquisar";
+
   return (
     <>
       <nav className="hidden md:flex fixed left-0 top-0 h-full w-[240px] bg-background-absolute border-r border-surface/30 flex-col py-6 z-50 glass-panel rounded-r-xl">
@@ -26,14 +28,14 @@ export function Sidebar() {
             icon={<Search size={18} />}
             label="Buscar"
             active={activeTab === "pesquisar"}
-            onClick={() => setActiveTab("pesquisar")}
+            onClick={() => navigate("/")}
           />
           <NavItem
             id="nav-library"
             icon={<BookOpen size={18} />}
             label="Biblioteca"
             active={activeTab === "biblioteca"}
-            onClick={() => setActiveTab("biblioteca")}
+            onClick={() => navigate("/library")}
           />
         </div>
       </nav>
@@ -42,15 +44,15 @@ export function Sidebar() {
         <div className="flex justify-around items-center h-16">
           <MobileNavItem
             icon={<Search size={20} />}
-            label="Search"
+            label="Buscar"
             active={activeTab === "pesquisar"}
-            onClick={() => setActiveTab("pesquisar")}
+            onClick={() => navigate("/")}
           />
           <MobileNavItem
             icon={<BookOpen size={20} />}
             label="Biblioteca"
             active={activeTab === "biblioteca"}
-            onClick={() => setActiveTab("biblioteca")}
+            onClick={() => navigate("/library")}
           />
         </div>
       </nav>
