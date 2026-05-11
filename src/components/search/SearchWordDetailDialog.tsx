@@ -28,44 +28,46 @@ export function SearchWordDetailDialog({
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: "auto" }}
           exit={{ opacity: 0, height: 0 }}
-          className="overflow-hidden bg-white/[0.02]"
+          className="overflow-hidden"
         >
           <DialogHeader className="space-y-4">
-            <div className="flex items-center justify-between">
-              <DialogTitle className="text-6xl font-bold tracking-tight text-white">
-                {entry.word}
-              </DialogTitle>
-            </div>
+            <DialogTitle className="text-6xl font-bold tracking-tight text-white">
+              {entry.word}
+            </DialogTitle>
             <DialogDescription className="text-zinc-500">
               Veja a definição e exemplos para a palavra "{entry.word}".
             </DialogDescription>
           </DialogHeader>
 
-          <div className="mt-10 space-y-6">
-            <div className="inline-block px-2 py-0.5 bg-purple-500/20 border border-purple-500/30 rounded text-[10px] font-bold uppercase tracking-widest text-purple-400">
-              Definição
-            </div>
-
+          <div className="mt-10 space-y-8">
             <div className="space-y-4">
-              <div className="flex gap-4 items-start">
-                <span className="text-cyan-400 font-bold w-6 shrink-0">1.</span>
+              <div className="inline-block px-2 py-0.5 bg-purple-500/20 border border-purple-500/30 rounded text-[10px] font-bold uppercase tracking-widest text-purple-400">
+                Definição
+              </div>
+
+              <div className="flex gap-3 items-start">
+                <span className="text-cyan-400 font-bold text-lg leading-relaxed">
+                  1.
+                </span>
                 <p className="text-zinc-300 text-lg leading-relaxed">
                   {entry.definition}
                 </p>
               </div>
+            </div>
 
-              <div className="inline-block px-2 py-0.5 bg-cyan-500/20 border border-cyan-500/30 rounded text-[10px] font-bold uppercase tracking-widest text-cyan-400">
-                Exemplo
-              </div>
+            {entry.example && (
+              <div className="space-y-4">
+                <div className="inline-block px-2 py-0.5 bg-cyan-500/20 border border-cyan-500/30 rounded text-[10px] font-bold uppercase tracking-widest text-cyan-400">
+                  Exemplo
+                </div>
 
-              {entry.example && (
-                <div className="pl-6 border-l-2 border-cyan-400/30 ml-6">
+                <div className="pl-4 border-l-2 border-cyan-400/30">
                   <p className="text-zinc-500 italic text-lg">
                     "{entry.example}"
                   </p>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         </motion.div>
       </DialogContent>
