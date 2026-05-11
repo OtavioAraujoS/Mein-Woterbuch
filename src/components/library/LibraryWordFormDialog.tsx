@@ -12,11 +12,12 @@ import {
 import { motion } from "motion/react";
 import { LibraryForm, type WordFormData } from "./LibraryFormFields";
 import { supabase } from "@/lib/supabase";
+import type { WordEntry } from "@/types/WordEntry";
 
 interface WordFormDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess?: () => void;
+  onSuccess?: (data?: WordEntry) => void;
   initialData?: WordFormData & { id?: string };
   showTrigger?: boolean;
 }
@@ -34,23 +35,23 @@ export function LibraryWordFormDialog({
   const handleAddWord = async (newData: WordFormData) => {
     setLoading(true);
 
-    const { error } = isEditing
+    const { data, error } = isEditing
       ? await supabase
           .from("words")
           .update(newData)
           .eq("id", initialData.id)
-      : await supabase.from("words").insert([
-          {
-            ...newData,
-            addedAt: Date.now(),
-          },
-        ]);
+          .select()
+      : await supabase.from("words").insert([newData]);
 
-    if (error) {
-      toast.error("Erro ao salvar palavra");
+    if (error || (isEditing && (!data || data.length === 0))) {
+      toast.error(
+        error?.message || "Nenhuma alteração foi feita (ID não encontrado)",
+      );
     } else {
-      toast.success("Palavra adicionada!");
-      onSuccess?.();
+      toast.success(
+        isEditing ? "Palavra atualizada com sucesso!" : "Palavra adicionada!",
+      );
+      onSuccess?.(data?.[0]);
       onClose();
     }
     setLoading(false);

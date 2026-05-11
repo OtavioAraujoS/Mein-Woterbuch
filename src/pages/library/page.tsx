@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/set-state-in-effect */
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { Search, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import type { WordEntry } from "@/types/WordEntry";
@@ -64,6 +64,22 @@ export default function Library() {
       toast.error("Erro ao deletar palavra");
     }
   };
+
+  const handleUpdateWord = (updatedWord: WordEntry) => {
+    setSavedWords((prev) =>
+      prev.map((w) => (w.id === updatedWord.id ? updatedWord : w)),
+    );
+  };
+  const initialWordData = useMemo(() => {
+    if (!editingWord) return undefined;
+    return {
+      word: editingWord.word,
+      definition: editingWord.definition,
+      example: editingWord.example || "",
+      id: editingWord.id,
+    };
+  }, [editingWord]);
+
   return (
     <main className="flex-1 min-h-screen p-8 lg:p-16 w-full text-zinc-100 font-sans">
       <AnimatePresence mode="wait">
@@ -85,18 +101,15 @@ export default function Library() {
           <LibraryWordFormDialog
             isOpen={!!editingWord}
             onClose={() => setEditingWord(null)}
-            onSuccess={fetchSavedWords}
+            onSuccess={(data) => {
+              if (data && editingWord) {
+                handleUpdateWord(data);
+              } else {
+                fetchSavedWords();
+              }
+            }}
             showTrigger={false}
-            initialData={
-              editingWord
-                ? {
-                    word: editingWord.word,
-                    definition: editingWord.definition,
-                    example: editingWord.example || "",
-                    id: editingWord.id,
-                  }
-                : undefined
-            }
+            initialData={initialWordData}
           />
 
           {isLoading ? (

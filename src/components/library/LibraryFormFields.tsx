@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -26,22 +25,12 @@ export function LibraryForm({
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors, isSubmitting: isFormSubmitting },
+    reset,
   } = useForm<WordFormData>({
     resolver: zodResolver(wordSchema),
-    defaultValues: initialData || {
-      word: "",
-      definition: "",
-      example: "",
-    },
+    values: initialData,
   });
-
-  useEffect(() => {
-    if (initialData) {
-      reset(initialData);
-    }
-  }, [initialData, reset]);
 
   const handleFormSubmit = async (data: WordFormData) => {
     await onSubmit(data);
