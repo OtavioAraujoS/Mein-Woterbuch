@@ -7,7 +7,7 @@ interface SearchResultsProps {
   activeIdx: number;
   onHover: (idx: number) => void;
   onClick: (entry: LexiconEntry) => void;
-  listRef: RefObject<HTMLUListElement>;
+  listRef: RefObject<HTMLUListElement | null>;
   query: string;
   isDebouncing: boolean;
   isLoading: boolean;
