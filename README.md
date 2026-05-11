@@ -1,75 +1,79 @@
-# React + TypeScript + Vite
+# 🇩🇪 Mein-Wörterbuch (Meu Dicionário)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Mein-Wörterbuch** é uma aplicação de dicionário e léxico alemão moderna, projetada para estudantes e entusiastas do idioma que buscam uma experiência rápida, fluida e visualmente atraente para gerenciar seu vocabulário.
 
-Currently, two official plugins are available:
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Supabase](https://img.shields.io/badge/Supabase-1C1C1C?style=for-the-badge&logo=supabase&logoColor=3ECF8E)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## ✨ Funcionalidades
 
-## React Compiler
+### 🔍 Busca em Tempo Real
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+- Sistema de busca ultra-rápido com **Debounce** para otimizar chamadas ao banco de dados.
+- Feedback visual de carregamento e tempo de resposta da requisição.
+- Navegação completa via teclado (setas e Enter).
 
-Note: This will impact Vite dev & build performances.
+### 📚 Gerenciamento de Biblioteca
 
-## Expanding the ESLint configuration
+- Adicione suas próprias palavras com definições e exemplos de uso.
+- Validação rigorosa de formulários com **Zod** e **React Hook Form**.
+- Persistência de dados em tempo real utilizando **Supabase**.
+- Exclusão de palavras com atualização instantânea da interface.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 🎨 UI/UX Premium
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Interface em **Dark Mode** com estética inspirada no Linear/Vercel.
+- Animações fluidas e estados de transição utilizando **Framer Motion**.
+- Notificações globais (Toasts) via **Sonner**.
+- Componentes acessíveis baseados no **Radix UI** e **Shadcn UI**.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## 🛠️ Tecnologias Utilizadas
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- **Core:** [React 19](https://react.dev/) + [Vite](https://vitejs.dev/)
+- **Estilização:** [Tailwind CSS](https://tailwindcss.com/)
+- **Componentes:** [Shadcn UI](https://ui.shadcn.com/) + [Radix UI](https://www.radix-ui.com/)
+- **Animações:** [Framer Motion (motion/react)](https://motion.dev/)
+- **Formulários:** [React Hook Form](https://react-hook-form.com/) + [Zod](https://zod.dev/)
+- **Ícones:** [Lucide React](https://lucide.dev/)
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 📦 Como rodar o projeto
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+1. **Clone o repositório:**
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+   ```bash
+   git clone https://github.com/OtavioAraujoS/Mein-Woterbuch.git
+   ```
+
+2. **Instale as dependências:**
+
+   ```bash
+   npm install
+   # ou
+   pnpm install
+   ```
+
+3. **Configure as variáveis de ambiente:**
+   Crie um arquivo `.env` na raiz do projeto com suas credenciais do Supabase:
+
+   ```env
+   VITE_SUPABASE_URL=sua_url_aqui
+   VITE_SUPABASE_ANON_KEY=sua_chave_anon_aqui
+   ```
+
+4. **Inicie o servidor de desenvolvimento:**
+   ```bash
+   npm run dev
+   ```
+
+## 🏗️ Estrutura do Projeto
+
+- `/src/components`: Componentes reutilizáveis de UI e lógica de negócio.
+- `/src/hooks`: Hooks customizados (como o `useLexiconSearch`).
+- `/src/pages`: Páginas da aplicação (Search e Library).
+- `/src/lib`: Configurações de bibliotecas externas (Supabase cliente).
+- `/src/types`: Definições de tipos TypeScript.
+
+---
+
+Desenvolvido com ❤️ por [Otávio Araújo](https://github.com/OtavioAraujoS)
