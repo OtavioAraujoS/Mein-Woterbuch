@@ -10,6 +10,7 @@ interface SearchResultsProps {
   listRef: RefObject<HTMLUListElement>;
   query: string;
   isDebouncing: boolean;
+  isLoading: boolean;
 }
 
 export function SearchResults({
@@ -20,8 +21,20 @@ export function SearchResults({
   listRef,
   query,
   isDebouncing,
+  isLoading,
 }: SearchResultsProps) {
   if (!query.trim()) return null;
+
+  if (isLoading) {
+    return (
+      <div className="border-t border-emerald-accent/20 px-4 py-10 flex flex-col items-center justify-center gap-3 bg-surface/10">
+        <div className="w-5 h-5 border-2 border-emerald-accent/30 border-t-emerald-accent rounded-full animate-spin" />
+        <p className="font-mono text-sm text-text-muted italic">
+          Buscando na base de dados...
+        </p>
+      </div>
+    );
+  }
 
   if (!isDebouncing && results.length === 0) {
     return (

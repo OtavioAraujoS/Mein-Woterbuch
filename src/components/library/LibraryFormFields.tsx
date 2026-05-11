@@ -21,9 +21,14 @@ export function LibraryForm({ onSubmit, isSubmitting }: LibraryFormProps) {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isSubmitting: isFormSubmitting },
   } = useForm<WordFormData>({
     resolver: zodResolver(wordSchema),
+    defaultValues: {
+      word: "",
+      definition: "",
+      example: "",
+    },
   });
 
   const handleFormSubmit = async (data: WordFormData) => {
@@ -93,10 +98,10 @@ export function LibraryForm({ onSubmit, isSubmitting }: LibraryFormProps) {
 
       <button
         type="submit"
-        disabled={isSubmitting}
+        disabled={isSubmitting || isFormSubmitting}
         className="w-full bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-4 rounded-lg transition-all flex items-center justify-center gap-2 mt-4 shadow-lg shadow-cyan-900/20"
       >
-        {isSubmitting ? (
+        {isSubmitting || isFormSubmitting ? (
           <Loader2 className="w-5 h-5 animate-spin" />
         ) : (
           <>

@@ -21,6 +21,7 @@ export function SearchPanel({ initialQuery = "" }: SearchPanelProps) {
   const [responseTime, setResponseTime] = useState<number | null>(null);
   const [results, setResults] = useState<LexiconEntry[]>([]);
   const [isDebouncing, setIsDebouncing] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedWord, setSelectedWord] = useState<LexiconEntry | null>(null);
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -35,6 +36,7 @@ export function SearchPanel({ initialQuery = "" }: SearchPanelProps) {
   const performSearch = useCallback(async (searchQuery: string) => {
     if (!searchQuery.trim()) return;
 
+    setIsLoading(true);
     const start = performance.now();
 
     const { data, error } = await supabase
@@ -51,10 +53,11 @@ export function SearchPanel({ initialQuery = "" }: SearchPanelProps) {
 
     setResponseTime(elapsed);
     setIsDebouncing(false);
+    setIsLoading(false);
   }, []);
 
   const executeSearch = useMemo(
-    () => debounce(performSearch, 300),
+    () => debounce(performSearch, 500),
     [performSearch],
   );
 
@@ -155,6 +158,7 @@ export function SearchPanel({ initialQuery = "" }: SearchPanelProps) {
                 listRef={listRef}
                 query={query}
                 isDebouncing={isDebouncing}
+                isLoading={isLoading}
               />
 
               {results.length > 0 && <SearchFooter count={results.length} />}
