@@ -23,18 +23,15 @@ export function SearchPanel({ initialQuery = "" }: SearchPanelProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
 
-  const performSearch = useCallback(
-    (searchQuery: string, langCode: "en" | "de") => {
-      const start = performance.now();
-      const found = searchLexicon(searchQuery, langCode);
-      const elapsed = Math.round(performance.now() - start);
+  const performSearch = useCallback((searchQuery: string) => {
+    const start = performance.now();
+    const found = searchLexicon(searchQuery);
+    const elapsed = Math.round(performance.now() - start);
 
-      setResults(found);
-      setResponseTime(elapsed);
-      setIsDebouncing(false);
-    },
-    [],
-  );
+    setResults(found);
+    setResponseTime(elapsed);
+    setIsDebouncing(false);
+  }, []);
 
   const executeSearch = useMemo(
     () => debounce(performSearch, 300),
@@ -51,7 +48,7 @@ export function SearchPanel({ initialQuery = "" }: SearchPanelProps) {
     }
 
     setIsDebouncing(true);
-    executeSearch(query, "de");
+    executeSearch(query);
 
     return () => {
       executeSearch.cancel();
